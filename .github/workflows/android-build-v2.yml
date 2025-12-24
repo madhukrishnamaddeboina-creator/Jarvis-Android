@@ -1,8 +1,5 @@
-- name: Upload APK
-  uses: actions/upload-artifact@v4
-  with:
-    name: Jarvis-APK
-    path: app/build/outputs/apk/debug/app-debug.apk
+name: Build Jarvis APK
+
 on:
   push:
     branches: [ "main" ]
@@ -12,23 +9,28 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
+    # Step 1: Checkout code
+    - name: Checkout repository
       uses: actions/checkout@v3
 
+    # Step 2: Set up JDK
     - name: Set up JDK
       uses: actions/setup-java@v3
       with:
         distribution: 'temurin'
         java-version: '17'
 
+    # Step 3: Make Gradle wrapper executable (optional)
     - name: Grant execute permission
       run: chmod +x ./gradlew || true
 
+    # Step 4: Build APK
     - name: Build APK
       run: ./gradlew assembleDebug || echo "Gradle wrapper missing"
 
+    # Step 5: Upload APK using v4
     - name: Upload APK
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: Jarvis-APK
         path: app/build/outputs/apk/debug/app-debug.apk
